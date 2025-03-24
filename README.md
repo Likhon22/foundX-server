@@ -1,228 +1,341 @@
-# **Project Setup and Configuration Guide**
+# **FoundX - Lost and Found Management System**
 
-## **Description**
+![FoundX Logo](https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png)
 
-This guide provides a detailed step-by-step process to clone, install, configure, and run the project. It covers everything from setting up environment variables, including database URI, Cloudinary account, and Gmail app password, to running the project in development and production modes. Follow these instructions to seamlessly get your project up and running.
+## 📑 **Table of Contents**
 
----
+- [Overview](#overview)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [API Documentation](#api-documentation)
+- [Installation Guide](#installation-guide)
+- [Environment Variables](#environment-variables)
+- [Database Setup](#database-setup)
+- [Running the Application](#running-the-application)
+- [Project Structure](#project-structure)
+- [Deployment](#deployment)
+- [Contributors](#contributors)
 
-# Installation Guide
+## 🌟 **Overview**
 
-## **1. Clone the Project Repository**
+FoundX is a comprehensive lost and found management system designed to help users report found items and allow others to claim them through a verification process. The platform facilitates the reconnection of lost items with their rightful owners through a structured, secure, and user-friendly interface.
 
-First, you need to clone the project repository from your version control platform (e.g., GitHub, GitLab).
+## 🚀 **Features**
 
-Open your terminal and execute the following command:
+- **User Management**
+
+  - User registration and authentication
+  - Profile management
+  - Role-based access control (Admin/User)
+
+- **Item Management**
+
+  - Report found items with details and images
+  - Categorize items for better organization
+  - Search and filter capabilities
+  - Location-based item discovery
+
+- **Claim Process**
+
+  - Submit claim requests for lost items
+  - Answer verification questions
+  - Receive notifications on claim status
+  - Approve or reject claims with feedback
+
+- **Admin Features**
+  - User management
+  - Category management
+  - Monitor platform activities
+
+## 💻 **Technology Stack**
+
+### Backend
+
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web framework
+- **TypeScript** - Type-safe JavaScript
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB object modeling
+
+### Authentication & Security
+
+- **JWT** - Token-based authentication
+- **Bcrypt.js** - Password hashing
+
+### File Storage
+
+- **Cloudinary** - Cloud-based image management
+- **Multer** - File upload handling
+
+### Email Service
+
+- **Nodemailer** - Email sending functionality
+
+### Validation
+
+- **Zod** - Schema validation
+
+### Development Tools
+
+- **ESLint** - Code linting
+- **Prettier** - Code formatting
+- **ts-node-dev** - TypeScript development server
+
+## 📝 **API Documentation**
+
+### Authentication Endpoints
+
+- `POST /api/v1/auth/register` - Register a new user
+- `POST /api/v1/auth/login` - Log in a user
+- `POST /api/v1/auth/change-password` - Change user password
+- `POST /api/v1/auth/refresh-token` - Refresh authentication token
+
+### User Endpoints
+
+- `POST /api/v1/users/create-user` - Create a new user (Admin only)
+- `GET /api/v1/users` - Get all users
+- `GET /api/v1/users/:id` - Get user by ID
+
+### Profile Endpoints
+
+- `GET /api/v1/profile` - Get user profile
+- `PATCH /api/v1/profile` - Update user profile
+
+### Item Category Endpoints
+
+- `POST /api/v1/item-categories` - Create item category (Admin only)
+- `GET /api/v1/item-categories` - Get all item categories
+- `GET /api/v1/item-categories/:id` - Get category by ID
+- `PUT /api/v1/item-categories/:id` - Update category (Admin only)
+- `DELETE /api/v1/item-categories/:id` - Delete category (Admin only)
+
+### Item Endpoints
+
+- `POST /api/v1/items` - Create a new item
+- `GET /api/v1/items` - Get all items
+- `GET /api/v1/items/:id` - Get item by ID
+- `PUT /api/v1/items/:id` - Update item
+- `DELETE /api/v1/items/:id` - Delete item
+
+### Claim Request Endpoints
+
+- `POST /api/v1/claim-request` - Create claim request
+- `GET /api/v1/claim-request/received-claim-request` - Get received claim requests
+- `GET /api/v1/claim-request/my-claim-request` - Get user's claim requests
+- `GET /api/v1/claim-request/:id` - Get claim request by ID
+- `PUT /api/v1/claim-request/:id` - Update claim request status with feedback
+
+### Search Endpoints
+
+- `GET /api/v1/search-items` - Search items
+
+## ⚙️ **Installation Guide**
+
+### Prerequisites
+
+- Node.js (v14.x or later)
+- MongoDB Atlas account
+- Cloudinary account
+- Gmail account
+
+### Step 1: Clone the Repository
 
 ```bash
-git clone <repository-url>
+git clone https://github.com/yourusername/foundx-server.git
+cd foundx-server
 ```
 
-Replace `<repository-url>` with the actual URL of your repository.
-
-## **2. Navigate to the Project Directory**
-
-Once the repository is cloned, navigate to the project directory:
+### Step 2: Install Dependencies
 
 ```bash
-cd project-name
-```
+# Using npm
+npm install
 
-Replace `project-name` with the name of the directory created by the `git clone` command.
-
-## **3. Install All Packages**
-
-Next, install all the required dependencies listed in the `package.json` file. You can use either Yarn or npm:
-
-With **Yarn**:
-
-```bash
+# Using yarn
 yarn install
 ```
 
-Or with **npm**:
+## 🔐 **Environment Variables**
+
+Create a `.env` file in the project root directory with the following variables:
 
 ```bash
-npm install
-```
-
-This command will install all the necessary packages.
-
-## **4. Configure Environment Variables**
-
-### **4.1 Rename the `.env.example` File**
-
-The project includes an `.env.example` file that contains example environment variables. Rename this file to `.env`:
-
-```bash
-mv .env.example .env
-```
-
-This will create a `.env` file where you will store your actual environment variables.
-
-### **4.2 Retrieve the MongoDB Connection URI**
-
-Since you already have a MongoDB cluster and user set up, retrieve the connection string from MongoDB Atlas:
-
-1. **Log in to MongoDB Atlas:**
-   - Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and log in with your credentials.
-
-2. **Select Your Cluster:**
-   - Once logged in, you’ll see your clusters on the dashboard. Click on the cluster you’ve already created.
-
-3. **Connect to Your Cluster:**
-   - On the cluster page, click the "Connect" button.
-
-4. **Choose a Connection Method:**
-   - Select **"Connect your application."**
-
-5. **Select Driver and Version:**
-   - Ensure the "Driver" dropdown is set to **"Node.js"** and the version is appropriate.
-
-6. **Copy the Connection String:**
-   - MongoDB Atlas will display a connection string like this:
-
-   ```plaintext
-   mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/<dbname>?retryWrites=true&w=majority
-   ```
-
-7. **Replace Placeholders in the Connection String:**
-   - Replace `<username>` with your MongoDB username.
-   - Replace `<password>` with your MongoDB user's password.
-   - Replace `<dbname>` with the name of the database you want to connect to.
-
-   For example:
-
-   ```plaintext
-   mongodb+srv://admin:Admin123456@cluster0.xxxxx.mongodb.net/lost-and-found?retryWrites=true&w=majority
-   ```
-
-8. **Add the Database URI to Your `.env` File**
-
-   Open the `.env` file in the project root and add the following line:
-
-   ```bash
-   DB_URL=mongodb+srv://admin:Admin123456@cluster0.xxxxx.mongodb.net/lost-and-found?retryWrites=true&w=majority
-   ```
-
-   Replace the URI with your actual MongoDB connection string.
-
-### **4.3 Set Up Cloudinary Account and Credentials**
-
-Cloudinary is used for managing and delivering images. To set it up:
-
-1. Visit [Cloudinary](https://cloudinary.com/).
-2. Sign up or log in to your account.
-3. Go to the Cloudinary Dashboard.
-4. Note down your `Cloud Name`, `API Key`, and `API Secret`.
-
-Add these credentials to your `.env` file:
-
-```bash
-CLOUDINARY_CLOUD_NAME=<your-cloud-name>
-CLOUDINARY_API_KEY=<your-api-key>
-CLOUDINARY_API_SECRET=<your-api-secret>
-```
-
-Replace `<your-cloud-name>`, `<your-api-key>`, and `<your-api-secret>` with your Cloudinary account details.
-
-### **4.4 Set Up Gmail App Password**
-
-To send emails through your Gmail account, you need to generate an app password:
-
-1. Go to your [Google Account Security Settings](https://myaccount.google.com/security).
-2. Under "Signing in to Google," enable 2-Step Verification.
-3. Once 2-Step Verification is enabled, go back to the Security page and click on "App passwords."
-4. Select "Mail" as the app and your device type, then generate the app password.
-5. Copy the generated password.
-
-Add your Gmail credentials to the `.env` file:
-
-```bash
-SENDER_EMAIL=<your-email>
-SENDER_APP_PASS=<your-app-password>
-```
-
-Replace `<your-email>` with your Gmail address and `<your-app-password>` with the app password you generated.
-
-### **4.5 Add Remaining Environment Variables**
-
-Complete your `.env` file with the following variables:
-
-```bash
+# Environment
 NODE_ENV=development
-PORT=3000
+
+# Port
+PORT=5000
+
+# Database URL
+DB_URL=mongodb+srv://<username>:<password>@cluster0.xxxxx.mongodb.net/<dbname>?retryWrites=true&w=majority
+
+# Bcrypt Salt Rounds
 BCRYPT_SALT_ROUNDS=12
-JWT_ACCESS_SECRET=secret
+
+# JWT Secrets and Expiry
+JWT_ACCESS_SECRET=your_access_secret_key
 JWT_ACCESS_EXPIRES_IN=7d
-JWT_REFRESH_SECRET=refreshsecret
+JWT_REFRESH_SECRET=your_refresh_secret_key
 JWT_REFRESH_EXPIRES_IN=1y
-ADMIN_EMAIL=admin@gmail.com
-ADMIN_PASSWORD=123456
+
+# Admin Credentials
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=secure_password
+ADMIN_PROFILE_PHOTO=https://example.com/profile-photo.png
 ADMIN_MOBILE_NUMBER=1234567890
-ADMIN_PROFILE_PHOTO=https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png
+
+# Cloudinary Credentials
+CLOUDINARY_CLOUD_NAME=your_cloud_name
+CLOUDINARY_API_KEY=your_api_key
+CLOUDINARY_API_SECRET=your_api_secret
+
+# Email Configuration
+SENDER_EMAIL=your_email@gmail.com
+SENDER_APP_PASS=your_app_password
 ```
 
-## **5. Run the Project**
+## 🗄️ **Database Setup**
 
-After setting up the environment variables, you can run the project.
+### MongoDB Atlas Setup
 
-### **5.1 Run in Development Mode**
+1. **Create a MongoDB Atlas Account**:
 
-To start the project in development mode, run:
+   - Visit [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and sign up or log in
 
-With **Yarn**:
+2. **Create a Cluster**:
+
+   - Click "Build a Cluster" and follow the instructions
+   - Choose the free tier option for development
+
+3. **Database Access**:
+
+   - Create a new database user with password authentication
+   - Set appropriate read/write permissions
+
+4. **Network Access**:
+
+   - Add your IP address to the IP Access List
+   - For development, you can allow access from anywhere (0.0.0.0/0)
+
+5. **Connect to Your Application**:
+   - Click "Connect" > "Connect your application"
+   - Select Node.js and copy the connection string
+   - Replace `<username>`, `<password>`, and `<dbname>` with your credentials
+
+## 📧 **Email Configuration**
+
+### Gmail App Password Setup
+
+1. **Enable 2-Step Verification**:
+
+   - Go to your [Google Account Security](https://myaccount.google.com/security)
+   - Enable 2-Step Verification
+
+2. **Create App Password**:
+
+   - Go to [App passwords](https://myaccount.google.com/apppasswords)
+   - Select "Mail" as the app and your device type
+   - Click "Generate" and copy the 16-character password
+
+3. **Add to Environment Variables**:
+   - Set `SENDER_EMAIL` to your Gmail address
+   - Set `SENDER_APP_PASS` to the generated app password
+
+## ☁️ **Cloudinary Setup**
+
+1. **Create a Cloudinary Account**:
+
+   - Visit [Cloudinary](https://cloudinary.com/) and sign up
+
+2. **Get API Credentials**:
+   - From your dashboard, note your Cloud name, API Key, and API Secret
+   - Add these to your environment variables
+
+## 🏃‍♂️ **Running the Application**
+
+### Development Mode
 
 ```bash
+# Using npm
+npm run dev
+
+# Using yarn
 yarn dev
 ```
 
-Or with **npm**:
+### Production Mode
 
 ```bash
-npm run dev
+# Build the project
+npm run build
+# or
+yarn build
+
+# Start the server
+npm start
+# or
+yarn start
 ```
 
-This will start the development server with hot-reloading enabled.
+The server will be running at `http://localhost:5000` (or the port defined in your environment variables).
 
-### **5.2 Run in Production Mode**
+## 📂 **Project Structure**
 
-To start the project in production mode:
-
-1. **Build the Project:**
-
-   With **Yarn**:
-
-   ```bash
-   yarn build
-   ```
-
-   Or with **npm**:
-
-   ```bash
-   npm run build
-   ```
-
-2. **Start the Server:**
-
-   With **Yarn**:
-
-   ```bash
-   yarn start
-   ```
-
-   Or with **npm**:
-
-   ```bash
-   npm start
-   ```
-
-## **6. Access the Application**
-
-Once the server is running, you can access the application in your browser by visiting:
-
-```bash
-http://localhost:5000
+```
+foundx-server/
+├── src/
+│   ├── app/
+│   │   ├── builder/          # Query builder utilities
+│   │   ├── config/           # Configuration files
+│   │   ├── errors/           # Error handling utilities
+│   │   ├── interfaces/       # TypeScript interfaces
+│   │   ├── middlewares/      # Express middlewares
+│   │   ├── modules/          # Feature modules
+│   │   │   ├── Auth/         # Authentication module
+│   │   │   ├── ClaimRequest/ # Claim request module
+│   │   │   ├── Item/         # Item module
+│   │   │   ├── ItemCategory/ # Item category module
+│   │   │   ├── Meilisearch/  # Search module
+│   │   │   ├── Profile/      # User profile module
+│   │   │   └── User/         # User module
+│   │   ├── routes/           # API routes
+│   │   ├── utils/            # Utility functions
+│   │   └── zod/              # Zod validations
+│   ├── views/                # Email templates
+│   ├── app.ts                # Express app setup
+│   └── server.ts             # Server entry point
+├── .env                      # Environment variables
+├── .eslintrc.json           # ESLint configuration
+├── .gitignore               # Git ignore file
+├── .prettierrc              # Prettier configuration
+├── package.json             # Project dependencies
+├── tsconfig.json            # TypeScript configuration
+└── README.md                # Project documentation
 ```
 
-This guide should help you set up, configure, and run your project seamlessly. If you encounter any issues or need further assistance, feel free to ask!
+## 🚢 **Deployment**
+
+### Vercel Deployment
+
+The project includes a `vercel.json` configuration file for easy deployment to Vercel:
+
+1. **Install Vercel CLI**:
+
+   ```bash
+   npm install -g vercel
+   ```
+
+2. **Deploy to Vercel**:
+
+   ```bash
+   vercel
+   ```
+
+3. **Environment Variables**:
+   - Add all the required environment variables in the Vercel dashboard
+
+### Other Deployment Options
+
+- **Heroku**: Use the Heroku CLI to deploy
+- **AWS**: Deploy to AWS EC2 or Elastic Beanstalk
+- **Digital Ocean**: Deploy as a Digital Ocean App or Droplet
